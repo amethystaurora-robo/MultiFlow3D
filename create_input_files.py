@@ -1,21 +1,19 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# In[3]:
-
+# ---
+# jupyter:
+#   jupytext:
+#     text_representation:
+#       extension: .py
+#       format_name: light
+#       format_version: '1.5'
+#       jupytext_version: 1.15.2
+#   kernelspec:
+#     display_name: Python 3 (ipykernel)
+#     language: python
+#     name: python3
+# ---
 
 import pandas as pd
 import numpy as np
-
-
-# In[ ]:
-
-
-#mdmap.cin
-#this file has 3 columns, the sub-domain ID num(s), the number of processors assigned to the sub-domain, and the processor ID num(s)
-
-
-# In[12]:
 
 
 #infodom.cin
@@ -49,6 +47,8 @@ def create_cin_file_with_columns():
         num_processor_list.append(num_processors)
         current_processor_num+=1
 
+    #Update user on status of application
+    print('Creating file...')
     #create ID columns
     #make a list of incrementing numbers * number of processors
     total_processors_num = num_domains*num_processors
@@ -56,35 +56,79 @@ def create_cin_file_with_columns():
     #create an entry separated by a semi-colon
     # Split the list and join with semicolon
     ID_list = [
-        ";".join(map(str, domains_processors_ID_list[i:i + num_processors]))
+        " ".join(map(str, domains_processors_ID_list[i:i + num_processors]))
         for i in range(0, len(domains_processors_ID_list), num_processors)
     ]
     domain_processor_df = pd.DataFrame({'Sub-Domain ID': ID_list,
         'Num Processors': num_processor_list, 'Processor ID': ID_list})
 
-    return domain_processor_df
-#TODO: make this into a .cin file with the same format as the one on Git
-#make this executable with
+    #Update user on status of application
+    print('Writing file...')
+    # Hard-code the length of the equal signs line to 49
+    equals_line = "=" * 49
+
+    header = f"{num_domains} number of domains\n{num_processors} number of processors\n{equals_line}\n"
+
+    # Writing to the .cin file
+    try:
+        with open('mdmap_test.cin', "w") as f:
+            # Write the header
+            f.write(header)
+        
+            # Write the DataFrame as a space-separated format with no column or row names, with centered rows
+            for index, row in domain_processor_df.iterrows():
+                f.write(f"{str(row['Sub-Domain ID']).rjust(4)}  "
+                        f"{str(row['Num Processors']).rjust(4)}  "
+                        f"{str(row['Processor ID']).rjust(4)}\n")
+            # Add the line of equals signs at the end of the file
+            f.write(equals_line + "\n")
+    
+        # If the file is written successfully, print a success message
+        print(f"File '{'mdmap_test.cin'}' created successfully!")
+    
+    except Exception as e:
+        # Handle any errors that occur during file creation
+        print(f"An error occurred while creating the file: {e}")
+        
+    return 
 
 
-# In[13]:
+# Function to center the entire file after writing it, takes file_path as argument
+def center_file(file_path):
+    # Read the content of the file
+    with open(file_path, 'r') as f:
+        content = f.readlines()
+
+    # Find the max length of any line
+    max_width = max(len(line) for line in content)
+
+    #Update user on status of application
+    print("Centering content...")
+    
+    # Center align every line in the file content
+    centered_content = [line.strip().center(max_width) + "\n" for line in content]
+
+     # Write the centered content back to the file with try-except for error handling
+    try:
+        with open(file_path, 'w') as f:
+            f.writelines(centered_content)
+        print(f"File centered successfully. Your file {file_path} is now in your working directory.")
+    except Exception as e:
+        print(f"An error occurred while writing the file: {e}")
+    
 
 
 # Call the function to create the .cin file
 create_cin_file_with_columns()
 
+center_file('mdmap_test.cin')
 
-# In[ ]:
-
-
+# +
+#infodom.cin
 #control.cin
 
-
-# In[ ]:
-
-
+# +
 #optional other files
 #geom.cin
 #LPT.cin
 #rough_bed.cin
-

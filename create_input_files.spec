@@ -1,5 +1,8 @@
 # -*- mode: python ; coding: utf-8 -*-
 
+import sys
+sys.setrecursionlimit(sys.getrecursionlimit() * 5)
+
 
 a = Analysis(
     ['create_input_files.py'],
