@@ -1,11 +1,11 @@
 ##############################General Parameters##############################
 F 5                            PSIcell(T)/PSIball(F), delta function
 2                              number of Lagrangian fractions
-on                             Inter-particle collisions     
-on                             Particle-wall collisions      
-###########################Fraction 1##########################
-2                              release frequency (i.e., how many tsteps between releases)
-2                              number of parts/release       
+2                              Inter-particle collisions     
+off                            Particle-wall collisions      
+##############################Fraction 1######################################
+3                              release frequency (i.e., how many tsteps between releases)
+3                              number of parts/release       
 0.005 0                        Diameter of particle in meters;, standard deviation (0 if constant)
 1320 100                       Density of particle in kg/m3;, standard deviation (0 if constant)
 0.2 0.2 0.05                   Volume of release (Lx,Ly,Lz)  
